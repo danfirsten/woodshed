@@ -18,7 +18,7 @@
  * The pitch→bin mapping is precomputed once as a flat sparse table, so the
  * per-frame cost is one FFT plus a few hundred array reads.
  */
-import { CHROMA, MAX_PITCH_HZ, MIN_PITCH_HZ } from './constants'
+import { CHROMA, MIN_PITCH_HZ } from './constants'
 import { FFT, hannWindow } from './fft'
 
 export const PITCH_CLASSES = 12
@@ -82,7 +82,7 @@ export class ChromaExtractor {
     const binHz = sampleRate / frameSize
     const maxHz = Math.min(CHROMA.maxHarmonicHz, sampleRate * 0.475)
     const lowMidi = Math.ceil(hzToMidi(MIN_PITCH_HZ))
-    const highMidi = Math.floor(hzToMidi(Math.min(MAX_PITCH_HZ, maxHz)))
+    const highMidi = Math.floor(hzToMidi(Math.min(CHROMA.maxFundamentalHz, maxHz)))
     const halfStep = Math.pow(2, CHROMA.binWindowSemitones / 12)
 
     const cls: number[] = []

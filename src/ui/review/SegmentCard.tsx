@@ -34,7 +34,7 @@ export function SegmentCard({ segment }: { segment: JamSegment }) {
           <span className="segment__num" aria-hidden="true">
             {segment.index + 1}
           </span>
-          <h3 id={`${segment.id}-title`} className="segment__name">
+          <h2 id={`${segment.id}-title`} className="segment__name">
             <EditableText
               value={segment.label ?? fallbackName}
               label="Rename this idea"
@@ -43,7 +43,7 @@ export function SegmentCard({ segment }: { segment: JamSegment }) {
                 void runAction(() => renameSegment(segment.id, next), "Couldn't rename the idea")
               }
             />
-          </h3>
+          </h2>
         </div>
 
         <div className="segment__meta">

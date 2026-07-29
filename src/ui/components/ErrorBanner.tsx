@@ -1,4 +1,5 @@
 import { useAppStore } from '../../state/store'
+import { IconButton } from './Button'
 import { CloseIcon, WarningIcon } from './Icons'
 
 export function ErrorBanner() {
@@ -11,14 +12,13 @@ export function ErrorBanner() {
       <div className="errorbanner__inner">
         <WarningIcon className="errorbanner__icon" />
         <p className="errorbanner__text">{error}</p>
-        <button
-          type="button"
-          className="btn btn--ghost btn--icon errorbanner__close"
-          aria-label="Dismiss error"
+        <IconButton
+          label="Dismiss error"
+          className="errorbanner__close"
           onClick={() => update({ error: null })}
         >
           <CloseIcon />
-        </button>
+        </IconButton>
       </div>
     </div>
   )

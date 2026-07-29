@@ -44,6 +44,8 @@ let asr: Asr | null = null
 
 let asrDevice: 'webgpu' | 'wasm' | null = null
 let loading: Promise<Asr> | null = null
+/** Set once WebGPU has proven itself unusable, so we never try it again. */
+let forceWasm = false
 
 function post(message: Parameters<LyricsWorkerScope['postMessage']>[0]): void {
   ctx.postMessage(message)
@@ -85,7 +87,7 @@ async function loadPipeline(id: number): Promise<Asr> {
     reportProgress(id, { status: 'Preparing speech model…', progress: -1 })
     let lastError: unknown = null
 
-    if (await webgpuAvailable()) {
+    if (!forceWasm && (await webgpuAvailable())) {
       try {
         const built = await createPipeline('webgpu', id)
         asrDevice = 'webgpu'
@@ -94,10 +96,12 @@ async function loadPipeline(id: number): Promise<Asr> {
       } catch (err) {
         // WebGPU can fail at session creation on plenty of real machines.
         lastError = err
+        forceWasm = true
       }
     }
 
     try {
+      // Same quantised files as the WebGPU attempt, so nothing is re-downloaded.
       const built = await createPipeline('wasm', id)
       asrDevice = 'wasm'
       asr = built
@@ -205,33 +209,35 @@ async function runTranscription(
 
   reportProgress(id, { status: 'Transcribing lyrics…', progress: 0 })
 
-  // BaseStreamer is all `generate()` needs (put/end); the config type names the
-  // richer TextStreamer, hence the cast.
-  const streamer = new WindowProgressStreamer(totalWindows, tick) as unknown as TextStreamer
-
-  let output: AutomaticSpeechRecognitionOutput
-  try {
-    const result = await transcriber(audio, {
+  const run = async (target: Asr): Promise<AutomaticSpeechRecognitionOutput> => {
+    // BaseStreamer is all `generate()` needs (put/end); the generation config
+    // type names the richer TextStreamer, hence the cast.
+    const streamer = new WindowProgressStreamer(
+      totalWindows,
+      tick,
+    ) as unknown as TextStreamer
+    const result = await target(audio, {
       chunk_length_s: CHUNK_LENGTH_SEC,
       stride_length_s: STRIDE_LENGTH_SEC,
       return_timestamps: 'word',
       streamer,
     })
-    output = (Array.isArray(result) ? result[0] : result) as AutomaticSpeechRecognitionOutput
+    return (Array.isArray(result) ? result[0] : result) as AutomaticSpeechRecognitionOutput
+  }
+
+  let output: AutomaticSpeechRecognitionOutput
+  try {
+    output = await run(transcriber)
   } catch (err) {
-    // A WebGPU session that builds but can't run: retry once on WASM.
-    if (asrDevice === 'webgpu') {
-      asr = null
-      asrDevice = null
-      const cpu = await loadPipeline(id)
-      const retry = await cpu(audio, {
-        chunk_length_s: CHUNK_LENGTH_SEC,
-        stride_length_s: STRIDE_LENGTH_SEC,
-        return_timestamps: 'word',
-      })
-      output = (Array.isArray(retry) ? retry[0] : retry) as AutomaticSpeechRecognitionOutput
-    } else {
-      throw humanizeError(err, 'transcribe')
+    // A WebGPU session that builds but can't actually run: retry once on WASM.
+    if (asrDevice !== 'webgpu') throw humanizeError(err, 'transcribe')
+    asr = null
+    asrDevice = null
+    forceWasm = true
+    try {
+      output = await run(await loadPipeline(id))
+    } catch (retryErr) {
+      throw humanizeError(retryErr, 'transcribe')
     }
   }
 

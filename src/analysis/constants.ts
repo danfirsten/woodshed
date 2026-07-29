@@ -43,10 +43,13 @@ export const CHROMA = {
   harmonicRolloff: 0.6,
   /** Half-width of the bin window collected around each harmonic, in semitones. */
   binWindowSemitones: 0.5,
+  /** Chord/key work only considers fundamentals up to here: above ~F5 a peak is
+   *  almost certainly somebody's overtone, not a note being fretted. */
+  maxFundamentalHz: 700,
   /** Harmonics above this frequency are hiss, not guitar. */
   maxHarmonicHz: 5000,
   /** Magnitudes are log-compressed as log(1 + gamma·m) before pitch mapping. */
-  logCompressionGamma: 100,
+  logCompressionGamma: 1,
 } as const
 
 /* -------------------------------------------------------------------- chords */

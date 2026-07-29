@@ -519,6 +519,7 @@
   background: var(--surface);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
+  opacity: var(--chip-op, 1);
   animation: ws-chipin var(--t-slow) both;
 }
 
@@ -552,7 +553,7 @@
     transform: translateX(14px) scale(0.92);
   }
   to {
-    opacity: 1;
+    opacity: var(--chip-op, 1);
     transform: none;
   }
 }
@@ -568,6 +569,7 @@
   display: grid;
   place-items: center;
   padding: var(--s-4);
+  background: var(--paper-deep);
   background: color-mix(in srgb, var(--paper-deep) 72%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);

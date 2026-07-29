@@ -58,6 +58,7 @@
   flex-wrap: wrap;
   padding: var(--s-3) var(--s-4);
   border-radius: var(--r-lg);
+  background: var(--surface);
   background: color-mix(in srgb, var(--surface) 92%, transparent);
   backdrop-filter: blur(12px) saturate(1.15);
   -webkit-backdrop-filter: blur(12px) saturate(1.15);
@@ -213,6 +214,55 @@
 .segment__sheet svg {
   max-width: 100%;
   height: auto;
+}
+
+/* The notation module renders bare markup — the theme dresses it. */
+.leadsheet {
+  width: 100%;
+  color: var(--ink);
+}
+
+.leadsheet-paper svg {
+  display: block;
+}
+
+.leadsheet-fallback {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-1);
+}
+
+.leadsheet-fallback-note {
+  font-size: var(--fs-xs);
+  font-style: italic;
+  color: var(--ink-faint);
+}
+
+.leadsheet-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.leadsheet-chip {
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.leadsheet-lyrics {
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+  color: var(--ink-soft);
 }
 
 /* ---- Lyrics -------------------------------------------------------------- */

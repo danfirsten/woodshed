@@ -4,7 +4,7 @@ import type { SessionSummary } from '../../types'
 import { formatTime } from '../../types'
 import { deleteSession, goToRecord, openSession, refreshLibrary } from '../../app/controller'
 import { runAction } from '../actions'
-import { Button } from '../components/Button'
+import { Button, IconButton } from '../components/Button'
 import { LibraryIcon, MicIcon, TrashIcon } from '../components/Icons'
 import './LibraryView.css'
 
@@ -61,15 +61,13 @@ function JamCard({
             </Button>
           </div>
         ) : (
-          <button
-            type="button"
-            className="btn btn--ghost btn--icon jamcard__trash"
-            aria-label={`Delete ${summary.title}`}
-            title="Delete"
+          <IconButton
+            label={`Delete ${summary.title}`}
+            className="jamcard__trash"
             onClick={() => onConfirmChange(summary.id)}
           >
             <TrashIcon size={17} />
-          </button>
+          </IconButton>
         )}
       </div>
     </li>

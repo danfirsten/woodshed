@@ -23,10 +23,15 @@ export interface RawProgressEvent {
 
 const BYTES_PER_MB = 1024 * 1024
 
-function formatMb(bytes: number): string {
-  const mb = bytes / BYTES_PER_MB
-  if (mb >= 10) return String(Math.round(mb))
-  return String(Math.round(mb * 10) / 10)
+/** "12 of 40 MB" for big downloads, "1.5 of 4 MB" for small ones. */
+function formatMbPair(loaded: number, total: number): string {
+  const totalMb = total / BYTES_PER_MB
+  const loadedMb = loaded / BYTES_PER_MB
+  if (totalMb >= 10) {
+    return `${Math.floor(loadedMb)} of ${Math.round(totalMb)}`
+  }
+  const round = (v: number) => String(Math.round(v * 10) / 10)
+  return `${round(loadedMb)} of ${round(totalMb)}`
 }
 
 interface FileState {
@@ -39,6 +44,7 @@ interface FileState {
 export class ModelLoadProgress {
   private readonly files = new Map<string, FileState>()
   private lastFraction = 0
+  private lastTotal = 0
   private lastStatus = ''
 
   /**
@@ -94,11 +100,16 @@ export class ModelLoadProgress {
 
     let next: ModelProgress
     if (total > 0) {
-      // Never go backwards when a newly-started file grows the denominator.
+      // Monotonic while the file set is stable; a newly discovered file grows
+      // the denominator, and then an honest step back beats a stuck bar.
+      if (total !== this.lastTotal) {
+        this.lastTotal = total
+        this.lastFraction = 0
+      }
       const fraction = Math.min(0.99, Math.max(this.lastFraction, loaded / total))
       this.lastFraction = fraction
       next = {
-        status: `Downloading speech model — ${formatMb(loaded)} of ${formatMb(total)} MB`,
+        status: `Downloading speech model — ${formatMbPair(loaded, total)} MB`,
         progress: fraction,
       }
     } else {

@@ -30,6 +30,7 @@ const MIN_BPM = 30
 const MAX_BPM = 300
 /** B4 — middle line of the treble staff; used for pitch-less anchors. */
 const ANCHOR_MIDI = 71
+const ANCHOR_ABC = 'B'
 /** Note values (in eighths) that can be drawn as a single note head. */
 const WRITABLE_DURATIONS = [8, 6, 4, 3, 2, 1]
 
@@ -62,6 +63,11 @@ interface GridEl {
   dur: number
   /** MIDI pitch — only for `note`. */
   midi?: number
+  /**
+   * Pre-spelled pitch, used for pitch-less anchors: their staff position is
+   * arbitrary, so they must not pick up key-signature accidentals.
+   */
+  literal?: string
   /** Already-sanitised chord symbol to print above this element. */
   chord?: string
   /** Already-escaped lyric syllable to print under this element. */
@@ -191,7 +197,7 @@ function buildRhythmElements(
       const ownEnd = Math.max(start + 1, toSlot(Math.max(w.endSec, w.startSec)))
       const nextStart = i + 1 < words.length ? toSlot(words[i + 1].startSec) : Infinity
       const end = Math.min(ownEnd, Math.max(start + 1, nextStart), start + EIGHTHS_PER_BAR)
-      raw.push({ kind: 'note', start, dur: end - start, midi: ANCHOR_MIDI })
+      raw.push({ kind: 'note', start, dur: end - start, midi: ANCHOR_MIDI, literal: ANCHOR_ABC })
     }
   } else {
     for (const c of chords) {
@@ -368,25 +374,40 @@ function serialize(
     for (let bar = lineStart; bar < lineEnd; bar++) {
       const acc = new Map<string, number>() // accidentals live until the bar line
       const barTokens: string[] = []
+      let prevLen = 0
+      let prevKind: ElKind | null = null
       for (const piece of perBar[bar]) {
-        const slotInBar = piece.start % EIGHTHS_PER_BAR
         const chunks = splitDuration(piece.dur)
+        let offset = 0
         for (let i = 0; i < chunks.length; i++) {
           const len = chunks[i]
+          const slotInBar = (piece.start + offset) % EIGHTHS_PER_BAR
+          offset += len
           const isFirstGlyph = piece.first && i === 0
           const isLastGlyph = piece.last && i === chunks.length - 1
           let token = ''
           if (isFirstGlyph && piece.el.chord) token += `"${piece.el.chord}"`
-          if (piece.el.kind === 'note' && piece.el.midi !== undefined) {
-            token += pitchToAbc(piece.el.midi, key, spelling, acc) + lengthSuffix(len)
+          if (piece.el.kind === 'note') {
+            const pitch =
+              piece.el.literal ??
+              (piece.el.midi !== undefined ? pitchToAbc(piece.el.midi, key, spelling, acc) : 'B')
+            token += pitch + lengthSuffix(len)
             if (!isLastGlyph) token += '-' // tie the split pieces back together
           } else {
             token += 'z' + lengthSuffix(len)
           }
-          // Beam eighths in groups of four; break the beam elsewhere.
+          // Beam runs of eighth notes within a half bar; separate everything else.
           const spaced =
-            barTokens.length > 0 && (slotInBar % 4 === 0 || len > 1 || !!piece.el.chord)
+            barTokens.length > 0 &&
+            (slotInBar % 4 === 0 ||
+              len > 1 ||
+              prevLen > 1 ||
+              !!piece.el.chord ||
+              piece.el.kind === 'rest' ||
+              prevKind === 'rest')
           barTokens.push((spaced ? ' ' : '') + token)
+          prevLen = len
+          prevKind = piece.el.kind
 
           // The w: line consumes exactly one token per note *and* per rest.
           if (hasWords) {

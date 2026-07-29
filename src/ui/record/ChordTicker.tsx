@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import type { CSSProperties } from 'react'
 import { useAppStore } from '../../state/store'
 import { formatTime } from '../../types'
 
@@ -15,7 +16,8 @@ export function ChordTicker() {
     if (el) el.scrollLeft = el.scrollWidth
   }, [count])
 
-  const visible = count > MAX_CHIPS ? chords.slice(count - MAX_CHIPS) : chords
+  const offset = Math.max(0, count - MAX_CHIPS)
+  const visible = offset > 0 ? chords.slice(offset) : chords
 
   return (
     <section className="ticker" aria-label="Chords detected so far">
@@ -35,9 +37,15 @@ export function ChordTicker() {
               const latest = i === visible.length - 1
               return (
                 <li
-                  key={`${chord.startSec}-${chord.symbol}-${i}`}
+                  key={`${offset + i}-${chord.symbol}`}
                   className={`chordchip${latest ? ' chordchip--latest' : ''}`}
-                  style={{ opacity: latest ? 1 : 0.45 + (0.55 * (i + 1)) / visible.length }}
+                  style={
+                    {
+                      '--chip-op': latest
+                        ? '1'
+                        : (0.45 + (0.55 * (i + 1)) / visible.length).toFixed(2),
+                    } as CSSProperties
+                  }
                   title={`${chord.symbol} at ${formatTime(chord.startSec)}`}
                 >
                   <span className="chordchip__symbol">{chord.symbol}</span>
