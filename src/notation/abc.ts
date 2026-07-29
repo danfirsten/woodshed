@@ -33,6 +33,14 @@ const ANCHOR_MIDI = 71
 const ANCHOR_ABC = 'B'
 /** Note values (in eighths) that can be drawn as a single note head. */
 const WRITABLE_DURATIONS = [8, 6, 4, 3, 2, 1]
+/**
+ * abcjs only draws slash note heads for elements carrying this decoration
+ * (`style=rhythm` on K:/V: parses but never reaches the engraver), and it
+ * special-cases full-bar rests back to a normal whole rest — so rhythm rests
+ * are emitted one per beat instead.
+ */
+const RHYTHM_DECORATION = '!style=rhythm!'
+const RHYTHM_REST_MAX = 2
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -106,7 +114,7 @@ function buildAbc(segment: JamSegment): string {
   attachChords(els, chords, toSlot)
   const hasWords = attachWords(els, words, toSlot)
 
-  const body = serialize(els, key, spelling, hasWords)
+  const body = serialize(els, key, spelling, hasWords, rhythmStyle)
   const headers = buildHeaders(segment, key, rhythmStyle)
   return [...headers, ...body].join('\n') + '\n'
 }
@@ -333,6 +341,7 @@ function serialize(
   key: KeyInfo,
   spelling: Map<number, Spelling>,
   hasWords: boolean,
+  rhythmStyle: boolean,
 ): string[] {
   const total = els.reduce((m, e) => Math.max(m, e.start + e.dur), 0)
   const bars = Math.max(1, Math.ceil(total / EIGHTHS_PER_BAR))
