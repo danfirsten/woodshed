@@ -6,7 +6,11 @@
 
 /** Lowest fundamental we care about — a whole step below standard low E (82.4 Hz). */
 export const MIN_PITCH_HZ = 70
-/** Highest fundamental we care about — a little above the 24th fret high E. */
+/**
+ * Highest fundamental we care about — a little above the 24th fret high E.
+ * Chord/key work uses a lower ceiling (`CHROMA.maxFundamentalHz`) because chord
+ * voicings live much further down; this bound is for melody.
+ */
 export const MAX_PITCH_HZ = 2000
 
 /* ---------------------------------------------------------------- segmentation */
@@ -113,9 +117,10 @@ export const MELODY = {
   minClarity: 0.9,
   /** Ignore frames below this RMS outright (cheap gate before the pitch detector). */
   minRms: 0.005,
-  /** Detected fundamentals outside this range are guitar-implausible. */
+  /** Detected fundamentals outside this range are guitar-implausible
+   *  (a 24-fret high E is 1319 Hz). */
   minHz: MIN_PITCH_HZ,
-  maxHz: 1400,
+  maxHz: MAX_PITCH_HZ * 0.7,
   /** Odd window of the median filter applied to the MIDI pitch track. */
   medianFrames: 5,
   /** A note must hold this long to be emitted. */
@@ -142,8 +147,9 @@ export const LIVE = {
   stableDetections: 3,
   /** Absolute RMS below which the live window counts as silence. */
   silenceRms: 0.008,
-  /** Minimum template score for a live detection to name a chord. */
-  minScore: 0.66,
+  /** Minimum template score for a live detection to name a chord. Stricter than
+   *  the offline pass: there is no smoothing downstream to clean up a bad call. */
+  minScore: 0.68,
   /** Live chords shorter than this are not worth showing. */
   minDurationSec: 0.35,
 } as const
