@@ -1,4 +1,529 @@
-/* Placeholder — replaced by the UI module. */
+/* ==========================================================================
+   Woodshed — theme tokens & base styles
+   "Warm acoustic": cream paper, walnut ink, honey-amber accent.
+   ========================================================================== */
+
 :root {
-  color-scheme: light dark;
+  /* ---- Type ------------------------------------------------------------ */
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-body: 'Nunito Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-base: 0.9375rem;
+  --fs-md: 1.0625rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: 2rem;
+  --fs-3xl: 2.75rem;
+  --fs-timer: clamp(3.25rem, 17vw, 6rem);
+
+  /* ---- Rhythm ---------------------------------------------------------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+
+  /* ---- Shape ----------------------------------------------------------- */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* ---- Motion ---------------------------------------------------------- */
+  --ease: cubic-bezier(0.32, 0.72, 0.3, 1);
+  --t-fast: 130ms var(--ease);
+  --t-med: 240ms var(--ease);
+  --t-slow: 420ms var(--ease);
+
+  --topbar-h: 60px;
+  --page-max: 940px;
+
+  color-scheme: light;
+}
+
+/* ---- Light: warm paper --------------------------------------------------- */
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --paper: #faf6ef;
+  --paper-deep: #f3ecdf;
+  --surface: #fffdf8;
+  --surface-2: #f6efe3;
+  --surface-sunk: #f1e8d9;
+
+  --ink: #33241b;
+  --ink-soft: #6d5847;
+  --ink-faint: #967f6c;
+
+  --line: #e8dcc7;
+  --line-soft: #f0e7d7;
+
+  --accent-rgb: 198 118 26;
+  --accent: rgb(198 118 26);
+  --accent-deep: #a95f10;
+  --accent-tint: #fbeed6;
+  --accent-ink: #fffaf1;
+
+  --danger-rgb: 168 61 40;
+  --danger: rgb(168 61 40);
+  --danger-tint: #fbe7e0;
+
+  --shadow-sm: 0 1px 2px rgb(74 51 30 / 0.06), 0 2px 6px rgb(74 51 30 / 0.05);
+  --shadow-md: 0 1px 2px rgb(74 51 30 / 0.05), 0 6px 16px -6px rgb(74 51 30 / 0.14);
+  --shadow-lg: 0 2px 4px rgb(74 51 30 / 0.05), 0 18px 40px -18px rgb(74 51 30 / 0.28);
+  --shadow-glow: 0 10px 34px -10px rgb(var(--accent-rgb) / 0.55);
+
+  --grain-opacity: 0.5;
+}
+
+/* ---- Dark: deep warm charcoal ------------------------------------------- */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --paper: #191411;
+  --paper-deep: #120e0c;
+  --surface: #241d19;
+  --surface-2: #2c241f;
+  --surface-sunk: #1e1815;
+
+  --ink: #f4e9da;
+  --ink-soft: #c6b3a0;
+  --ink-faint: #9a8877;
+
+  --line: #3a2f28;
+  --line-soft: #2f2621;
+
+  --accent-rgb: 232 165 71;
+  --accent: rgb(232 165 71);
+  --accent-deep: #f3b862;
+  --accent-tint: #35281a;
+  --accent-ink: #241804;
+
+  --danger-rgb: 226 124 98;
+  --danger: rgb(226 124 98);
+  --danger-tint: #3a231c;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 6px rgb(0 0 0 / 0.24);
+  --shadow-md: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 20px -8px rgb(0 0 0 / 0.55);
+  --shadow-lg: 0 2px 4px rgb(0 0 0 / 0.3), 0 22px 46px -20px rgb(0 0 0 / 0.75);
+  --shadow-glow: 0 10px 40px -8px rgb(var(--accent-rgb) / 0.45);
+
+  --grain-opacity: 0.3;
+}
+
+/* System preference fallback before the theme script stamps data-theme. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+
+    --paper: #191411;
+    --paper-deep: #120e0c;
+    --surface: #241d19;
+    --surface-2: #2c241f;
+    --surface-sunk: #1e1815;
+
+    --ink: #f4e9da;
+    --ink-soft: #c6b3a0;
+    --ink-faint: #9a8877;
+
+    --line: #3a2f28;
+    --line-soft: #2f2621;
+
+    --accent-rgb: 232 165 71;
+    --accent: rgb(232 165 71);
+    --accent-deep: #f3b862;
+    --accent-tint: #35281a;
+    --accent-ink: #241804;
+
+    --danger-rgb: 226 124 98;
+    --danger: rgb(226 124 98);
+    --danger-tint: #3a231c;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 6px rgb(0 0 0 / 0.24);
+    --shadow-md: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 20px -8px rgb(0 0 0 / 0.55);
+    --shadow-lg: 0 2px 4px rgb(0 0 0 / 0.3), 0 22px 46px -20px rgb(0 0 0 / 0.75);
+    --shadow-glow: 0 10px 40px -8px rgb(var(--accent-rgb) / 0.45);
+
+    --grain-opacity: 0.3;
+  }
+}
+
+/* ==========================================================================
+   Reset & base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: 1.55;
+  color: var(--ink);
+  background-color: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color var(--t-med), color var(--t-med);
+}
+
+/* Soft warm light from the top — like a lamp over the practice room. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(120% 70% at 50% -20%, rgb(var(--accent-rgb) / 0.1), transparent 62%),
+    radial-gradient(90% 60% at 100% 100%, rgb(var(--accent-rgb) / 0.05), transparent 60%);
+  opacity: var(--grain-opacity);
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin: 0;
+  font-variation-settings: 'SOFT' 0, 'WONK' 0;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+canvas {
+  display: block;
+}
+
+::selection {
+  background: rgb(var(--accent-rgb) / 0.25);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   Primitives
+   ========================================================================== */
+
+/* ---- Card ---------------------------------------------------------------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--t-med), transform var(--t-med), border-color var(--t-med);
+}
+
+.card--lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgb(var(--accent-rgb) / 0.32);
+}
+
+/* ---- Button -------------------------------------------------------------- */
+.btn {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  --btn-border: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: 0.55rem 1rem;
+  min-height: 40px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  font-weight: 650;
+  letter-spacing: 0.005em;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast),
+    box-shadow var(--t-fast), transform var(--t-fast);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.btn--sm {
+  min-height: 32px;
+  padding: 0.3rem 0.7rem;
+  font-size: var(--fs-sm);
+}
+
+.btn--lg {
+  min-height: 48px;
+  padding: 0.7rem 1.4rem;
+  font-size: var(--fs-md);
+}
+
+.btn--primary {
+  --btn-bg: var(--accent);
+  --btn-fg: var(--accent-ink);
+  box-shadow: var(--shadow-md);
+}
+.btn--primary:not(:disabled):hover {
+  --btn-bg: var(--accent-deep);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn--soft {
+  --btn-bg: var(--surface);
+  --btn-fg: var(--ink);
+  --btn-border: var(--line);
+  box-shadow: var(--shadow-sm);
+}
+.btn--soft:not(:disabled):hover {
+  --btn-bg: var(--surface-2);
+  --btn-border: rgb(var(--accent-rgb) / 0.4);
+}
+
+.btn--ghost {
+  --btn-fg: var(--ink-soft);
+}
+.btn--ghost:not(:disabled):hover {
+  --btn-bg: var(--surface-2);
+  --btn-fg: var(--ink);
+}
+
+.btn--danger {
+  --btn-bg: var(--danger-tint);
+  --btn-fg: var(--danger);
+  --btn-border: rgb(var(--danger-rgb) / 0.35);
+}
+.btn--danger:not(:disabled):hover {
+  --btn-bg: rgb(var(--danger-rgb) / 0.18);
+}
+
+.btn--icon {
+  min-height: 38px;
+  width: 38px;
+  padding: 0;
+  border-radius: var(--r-pill);
+}
+
+.btn__label--busy {
+  opacity: 0.75;
+}
+
+/* ---- Badge / chip -------------------------------------------------------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.badge--accent {
+  background: var(--accent-tint);
+  border-color: rgb(var(--accent-rgb) / 0.35);
+  color: var(--accent-deep);
+}
+
+.badge--muted {
+  background: transparent;
+  color: var(--ink-faint);
+}
+
+.badge--danger {
+  background: var(--danger-tint);
+  border-color: rgb(var(--danger-rgb) / 0.3);
+  color: var(--danger);
+}
+
+.badge__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+/* ---- Spinner ------------------------------------------------------------- */
+.spinner {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  opacity: 0.9;
+  animation: ws-spin 720ms linear infinite;
+  flex: none;
+}
+
+@keyframes ws-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- Text helpers -------------------------------------------------------- */
+.eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.muted {
+  color: var(--ink-soft);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* ---- Layout -------------------------------------------------------------- */
+.page {
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--s-6) var(--s-5) var(--s-8);
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: var(--s-5) var(--s-4) var(--s-7);
+  }
+}
+
+/* ---- Editable text ------------------------------------------------------- */
+.editable {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  max-width: 100%;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  background: transparent;
+  padding: 0.1em 0.4em;
+  margin-left: -0.4em;
+  text-align: left;
+  cursor: text;
+  color: inherit;
+  font: inherit;
+  transition: background-color var(--t-fast), border-color var(--t-fast);
+}
+
+.editable:hover {
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+
+.editable__pencil {
+  opacity: 0;
+  color: var(--ink-faint);
+  flex: none;
+  transition: opacity var(--t-fast);
+}
+
+.editable:hover .editable__pencil,
+.editable:focus-visible .editable__pencil {
+  opacity: 1;
+}
+
+.editable__input {
+  width: 100%;
+  border: 1px solid rgb(var(--accent-rgb) / 0.55);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  padding: 0.1em 0.4em;
+  margin-left: -0.4em;
+  font: inherit;
+  color: inherit;
+  box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.14);
+  outline: none;
+}
+
+/* ---- Reduced motion ------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .spinner {
+    animation: ws-spin 1.4s linear infinite !important;
+    animation-duration: 1.4s !important;
+    animation-iteration-count: infinite !important;
+  }
 }
