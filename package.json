@@ -1,0 +1,29 @@
+{
+  "name": "woodshed",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.3.1",
+    "abcjs": "^6.4.4",
+    "fflate": "^0.8.2",
+    "jspdf": "^2.5.2",
+    "pitchy": "^4.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
+  }
+}
