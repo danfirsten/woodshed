@@ -115,7 +115,7 @@ function buildAbc(segment: JamSegment): string {
   const hasWords = attachWords(els, words, toSlot)
 
   const body = serialize(els, key, spelling, hasWords, rhythmStyle)
-  const headers = buildHeaders(segment, key, rhythmStyle)
+  const headers = buildHeaders(segment, key)
   return [...headers, ...body].join('\n') + '\n'
 }
 
@@ -386,7 +386,10 @@ function serialize(
       let prevLen = 0
       let prevKind: ElKind | null = null
       for (const piece of perBar[bar]) {
-        const chunks = splitDuration(piece.dur)
+        const chunks =
+          rhythmStyle && piece.el.kind === 'rest'
+            ? splitRhythmRest(piece.start, piece.dur)
+            : splitDuration(piece.dur)
         let offset = 0
         for (let i = 0; i < chunks.length; i++) {
           const len = chunks[i]
@@ -396,6 +399,7 @@ function serialize(
           const isLastGlyph = piece.last && i === chunks.length - 1
           let token = ''
           if (isFirstGlyph && piece.el.chord) token += `"${piece.el.chord}"`
+          if (rhythmStyle) token += RHYTHM_DECORATION
           if (piece.el.kind === 'note') {
             const pitch =
               piece.el.literal ??
@@ -440,12 +444,30 @@ function serialize(
 }
 
 /** Break an arbitrary slot count into note values that can actually be drawn. */
-function splitDuration(slots: number): number[] {
+function splitDuration(slots: number, maxChunk = WRITABLE_DURATIONS[0]): number[] {
   let left = Math.max(1, Math.round(slots))
   const out: number[] = []
   while (left > 0) {
-    const next = WRITABLE_DURATIONS.find((d) => d <= left)
+    const next = WRITABLE_DURATIONS.find((d) => d <= left && d <= maxChunk)
     if (next === undefined) break
+    out.push(next)
+    left -= next
+  }
+  return out.length > 0 ? out : [1]
+}
+
+/** One rhythm slash per beat, with the first chunk aligned back onto the beat. */
+function splitRhythmRest(start: number, slots: number): number[] {
+  let left = Math.max(1, Math.round(slots))
+  const out: number[] = []
+  const lead = RHYTHM_REST_MAX - (start % RHYTHM_REST_MAX)
+  if (lead < RHYTHM_REST_MAX) {
+    const first = Math.min(lead, left)
+    out.push(first)
+    left -= first
+  }
+  while (left > 0) {
+    const next = Math.min(RHYTHM_REST_MAX, left)
     out.push(next)
     left -= next
   }
@@ -571,15 +593,13 @@ function accidentalSymbol(alter: number): string {
 // Headers + escaping
 // ---------------------------------------------------------------------------
 
-function buildHeaders(segment: JamSegment, key: KeyInfo, rhythmStyle: boolean): string[] {
+function buildHeaders(segment: JamSegment, key: KeyInfo): string[] {
   const headers = ['X:1', `T:${safeTitle(segment)}`, 'M:4/4', 'L:1/8']
   const bpm = segment.tempoBpm
   if (typeof bpm === 'number' && Number.isFinite(bpm) && bpm > 0) {
     headers.push(`Q:1/4=${Math.round(Math.min(MAX_BPM, Math.max(MIN_BPM, bpm)))}`)
   }
-  // `style=rhythm` draws slash note heads — the right look for a chart with no
-  // real melody. Anything pitched keeps the normal head.
-  headers.push(`K:${key.name}${rhythmStyle ? ' style=rhythm' : ''}`)
+  headers.push(`K:${key.name}`)
   return headers
 }
 

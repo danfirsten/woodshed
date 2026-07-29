@@ -49,7 +49,7 @@ export const CHROMA = {
   /** Harmonics above this frequency are hiss, not guitar. */
   maxHarmonicHz: 5000,
   /** Magnitudes are log-compressed as log(1 + gamma·m) before pitch mapping. */
-  logCompressionGamma: 1,
+  logCompressionGamma: 0.05,
 } as const
 
 /* -------------------------------------------------------------------- chords */
@@ -67,9 +67,9 @@ export const CHORD = {
   qualityPrior: {
     maj: 1,
     min: 1,
-    '7': 0.97,
-    maj7: 0.95,
-    m7: 0.97,
+    '7': 0.96,
+    maj7: 0.94,
+    m7: 0.96,
   },
 } as const
 
@@ -133,9 +133,11 @@ export const LIVE = {
   windowSec: 0.5,
   /** How much new audio triggers the next detection. */
   strideSec: 0.25,
-  /** Live chroma frame/hop, seconds (rounded to a power of two at runtime). */
-  frameSec: 0.128,
-  frameHopSec: 0.064,
+  /** Live chroma frame/hop, seconds (frame is rounded to a power of two at
+   *  runtime). 256 ms matches the offline frame: the extra frequency resolution
+   *  at the bottom of the guitar's range is what keeps live chords honest. */
+  frameSec: 0.256,
+  frameHopSec: 0.128,
   /** A candidate must win this many consecutive detections before it is accepted. */
   stableDetections: 3,
   /** Absolute RMS below which the live window counts as silence. */
