@@ -1,0 +1,220 @@
+/* App shell: top bar, error banner, footer. */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.app__main {
+  flex: 1 1 auto;
+}
+
+/* ---- Top bar ------------------------------------------------------------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.topbar__inner {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  min-height: var(--topbar-h);
+  padding: 0 var(--s-4);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 0;
+  background: none;
+  padding: 0.25rem 0.35rem 0.25rem 0.25rem;
+  margin-right: auto;
+  border-radius: var(--r-md);
+  cursor: pointer;
+}
+
+.wordmark__text {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-variation-settings: 'SOFT' 40, 'WONK' 1;
+}
+
+.wordmark__mark {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--accent), var(--accent-deep));
+  box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.16);
+  flex: none;
+  transition: box-shadow var(--t-med);
+}
+
+.wordmark:hover .wordmark__mark {
+  box-shadow: 0 0 0 5px rgb(var(--accent-rgb) / 0.2);
+}
+
+.wordmark__ring {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent-ink);
+  opacity: 0.75;
+}
+
+.topbar__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+}
+
+.navlink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+
+.navlink:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.navlink[aria-current='page'] {
+  background: var(--accent-tint);
+  border-color: rgb(var(--accent-rgb) / 0.32);
+  color: var(--accent-deep);
+}
+
+.navlink__live {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgb(var(--accent-rgb) / 0.7);
+  animation: ws-livedot 1.8s var(--ease) infinite;
+}
+
+@keyframes ws-livedot {
+  0% {
+    box-shadow: 0 0 0 0 rgb(var(--accent-rgb) / 0.6);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 7px rgb(var(--accent-rgb) / 0);
+  }
+}
+
+.themetoggle__icon {
+  display: inline-flex;
+  animation: ws-fadein var(--t-med) both;
+}
+
+@keyframes ws-fadein {
+  from {
+    opacity: 0;
+    transform: rotate(-25deg) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .navlink span:not(.navlink__live) {
+    display: none;
+  }
+  .navlink {
+    padding: 0.4rem 0.6rem;
+  }
+  .wordmark__text {
+    font-size: 1.05rem;
+  }
+}
+
+/* ---- Error banner -------------------------------------------------------- */
+.errorbanner {
+  position: sticky;
+  top: var(--topbar-h);
+  z-index: 25;
+  padding: var(--s-3) var(--s-4) 0;
+  animation: ws-slidedown var(--t-med) both;
+}
+
+@keyframes ws-slidedown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.errorbanner__inner {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-3) var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--danger-tint);
+  border: 1px solid rgb(var(--danger-rgb) / 0.35);
+  color: var(--danger);
+  box-shadow: var(--shadow-md);
+}
+
+.errorbanner__icon {
+  flex: none;
+  margin-top: 2px;
+}
+
+.errorbanner__text {
+  flex: 1 1 auto;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.errorbanner__close {
+  flex: none;
+  color: var(--danger);
+  min-height: 30px;
+  width: 30px;
+}
+
+/* ---- Footer -------------------------------------------------------------- */
+.app__footer {
+  padding: var(--s-5) var(--s-4) var(--s-6);
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.02em;
+}

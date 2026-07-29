@@ -1,0 +1,304 @@
+/* Review view — session header, sticky player + exports, segment cards. */
+
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+/* ---- Header -------------------------------------------------------------- */
+.review__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.review__title {
+  font-size: clamp(1.7rem, 5.5vw, var(--fs-3xl));
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 30, 'WONK' 1;
+  max-width: 100%;
+}
+
+.review__title .editable,
+.review__title .editable__input {
+  font-family: var(--font-display);
+  font-size: inherit;
+  font-weight: inherit;
+  max-width: 100%;
+}
+
+.review__title .editable__text {
+  overflow-wrap: anywhere;
+}
+
+.review__sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--fs-sm);
+}
+
+.review__dot {
+  opacity: 0.5;
+}
+
+/* ---- Sticky player bar --------------------------------------------------- */
+.playerbar {
+  position: sticky;
+  top: calc(var(--topbar-h) + var(--s-2));
+  z-index: 20;
+}
+
+.playerbar__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(12px) saturate(1.15);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+}
+
+.playerbar__audio {
+  flex: 1 1 260px;
+  min-width: 0;
+  width: 100%;
+  height: 38px;
+  border-radius: var(--r-pill);
+  filter: saturate(0.72);
+}
+
+.playerbar__missing {
+  flex: 1 1 200px;
+  font-size: var(--fs-sm);
+  font-style: italic;
+}
+
+.exports {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex: none;
+}
+
+@media (max-width: 620px) {
+  .playerbar__inner {
+    gap: var(--s-3);
+  }
+  .exports {
+    width: 100%;
+  }
+  .exports .btn {
+    flex: 1 1 0;
+  }
+}
+
+/* ---- Segments ------------------------------------------------------------ */
+.review__segments {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+.segment {
+  padding: var(--s-5);
+  border-radius: var(--r-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.segment:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.segment__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.segment__title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.segment__num {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.segment__name {
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  min-width: 0;
+  font-variation-settings: 'SOFT' 20, 'WONK' 1;
+}
+
+.segment__name .editable {
+  font-family: var(--font-display);
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.segment__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.timechip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast),
+    box-shadow var(--t-fast);
+}
+
+.timechip:not(:disabled):hover {
+  background: var(--accent-tint);
+  border-color: rgb(var(--accent-rgb) / 0.4);
+  color: var(--accent-deep);
+  box-shadow: var(--shadow-sm);
+}
+
+.timechip:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.timechip__icon {
+  opacity: 0.75;
+}
+
+/* ---- Lead sheet slot ----------------------------------------------------- */
+.segment__sheet {
+  overflow-x: auto;
+  padding: var(--s-3) var(--s-2);
+  border-radius: var(--r-md);
+  background: var(--surface-sunk);
+  border: 1px solid var(--line-soft);
+}
+
+.segment__sheet svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---- Lyrics -------------------------------------------------------------- */
+.lyrics {
+  border-top: 1px dashed var(--line);
+  padding-top: var(--s-3);
+}
+
+.lyrics__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  border: 0;
+  background: none;
+  padding: 0.2rem 0.4rem 0.2rem 0.1rem;
+  border-radius: var(--r-sm);
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  cursor: pointer;
+  transition: color var(--t-fast);
+}
+
+.lyrics__toggle:hover {
+  color: var(--accent-deep);
+}
+
+.lyrics__chevron {
+  transition: transform var(--t-med);
+  flex: none;
+}
+
+.lyrics__chevron--open {
+  transform: rotate(90deg);
+}
+
+.lyrics__count {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--ink-faint);
+}
+
+.lyrics__body {
+  margin-top: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--line-soft);
+  color: var(--ink);
+  font-size: var(--fs-base);
+  line-height: 1.7;
+  animation: ws-fadein var(--t-med) both;
+}
+
+/* ---- Empty state (shared with library) ----------------------------------- */
+.emptystate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--s-3);
+  padding: var(--s-7) var(--s-5);
+  border-radius: var(--r-xl);
+  margin-top: var(--s-5);
+}
+
+.emptystate__icon {
+  color: var(--accent);
+  opacity: 0.85;
+}
+
+.emptystate__title {
+  font-size: var(--fs-xl);
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 30, 'WONK' 1;
+}
+
+.emptystate__body {
+  max-width: 34ch;
+  font-size: var(--fs-sm);
+}
+
+.emptystate__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  justify-content: center;
+  margin-top: var(--s-2);
+}

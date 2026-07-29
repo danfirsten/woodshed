@@ -1,0 +1,136 @@
+/* Library view — saved session cards. */
+
+.library {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+.library__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.library__title {
+  font-size: clamp(1.7rem, 5.5vw, var(--fs-2xl));
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 30, 'WONK' 1;
+}
+
+.library__sub {
+  font-size: var(--fs-sm);
+}
+
+.library__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--s-4);
+}
+
+.jamcard {
+  position: relative;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  animation: ws-cardin var(--t-slow) both;
+}
+
+@keyframes ws-cardin {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.jamcard__open {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-2);
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: none;
+  padding: var(--s-4) var(--s-4) var(--s-4);
+  padding-right: 3.25rem;
+  cursor: pointer;
+  border-radius: inherit;
+}
+
+.jamcard__open:hover .jamcard__title {
+  color: var(--accent-deep);
+}
+
+.jamcard__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+  font-variation-settings: 'SOFT' 20, 'WONK' 1;
+  overflow-wrap: anywhere;
+  transition: color var(--t-fast);
+}
+
+.jamcard__meta {
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
+  letter-spacing: 0.01em;
+}
+
+.jamcard__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-1);
+}
+
+.jamcard__actions {
+  position: absolute;
+  top: var(--s-3);
+  right: var(--s-3);
+  z-index: 2;
+}
+
+.jamcard__trash {
+  color: var(--ink-faint);
+  opacity: 0.75;
+  transition: color var(--t-fast), background-color var(--t-fast), opacity var(--t-fast);
+}
+
+.jamcard:hover .jamcard__trash,
+.jamcard__trash:focus-visible {
+  opacity: 1;
+}
+
+.jamcard__trash:hover {
+  color: var(--danger);
+  background: var(--danger-tint);
+}
+
+.confirm {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: 0.2rem 0.3rem 0.2rem 0.6rem;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  animation: ws-fadein var(--t-fast) both;
+}
+
+.confirm__label {
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
