@@ -1,3 +1,5 @@
+![Woodshed: just play, Woodshed writes it down. Scratch writes chords and notes onto a staff.](docs/assets/banner.png)
+
 # 🎸 Woodshed
 
 **Just play. Woodshed writes it down.**
